@@ -1,0 +1,204 @@
+---
+applyTo: "**/*.ts,**/*.tsx,**/*.js,**/*.jsx"
+---
+
+## Source: coding-style.md
+
+---
+paths:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+---
+# TypeScript/JavaScript Coding Style
+
+> This file extends [common/coding-style.md](../common/coding-style.md) with TypeScript/JavaScript specific content.
+
+## Immutability
+
+Use spread operator for immutable updates:
+
+```typescript
+// WRONG: Mutation
+function updateUser(user, name) {
+  user.name = name  // MUTATION!
+  return user
+}
+
+// CORRECT: Immutability
+function updateUser(user, name) {
+  return {
+    ...user,
+    name
+  }
+}
+```
+
+## Error Handling
+
+Use async/await with try-catch:
+
+```typescript
+try {
+  const result = await riskyOperation()
+  return result
+} catch (error) {
+  console.error('Operation failed:', error)
+  throw new Error('Detailed user-friendly message')
+}
+```
+
+## Input Validation
+
+Use Zod for schema-based validation:
+
+```typescript
+import { z } from 'zod'
+
+const schema = z.object({
+  email: z.string().email(),
+  age: z.number().int().min(0).max(150)
+})
+
+const validated = schema.parse(input)
+```
+
+## Console.log
+
+- No `console.log` statements in production code
+- Use proper logging libraries instead
+- See hooks for automatic detection
+
+## Source: hooks.md
+
+---
+paths:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+---
+# TypeScript/JavaScript Hooks
+
+> This file extends [common/hooks.md](../common/hooks.md) with TypeScript/JavaScript specific content.
+
+## PostToolUse Hooks
+
+Configure in `~/.claude/settings.json`:
+
+- **Prettier**: Auto-format JS/TS files after edit
+- **TypeScript check**: Run `tsc` after editing `.ts`/`.tsx` files
+- **console.log warning**: Warn about `console.log` in edited files
+
+## Stop Hooks
+
+- **console.log audit**: Check all modified files for `console.log` before session ends
+
+## Source: patterns.md
+
+---
+paths:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+---
+# TypeScript/JavaScript Patterns
+
+> This file extends [common/patterns.md](../common/patterns.md) with TypeScript/JavaScript specific content.
+
+## API Response Format
+
+```typescript
+interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  error?: string
+  meta?: {
+    total: number
+    page: number
+    limit: number
+  }
+}
+```
+
+## Custom Hooks Pattern
+
+```typescript
+export function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay)
+    return () => clearTimeout(handler)
+  }, [value, delay])
+
+  return debouncedValue
+}
+```
+
+## Repository Pattern
+
+```typescript
+interface Repository<T> {
+  findAll(filters?: Filters): Promise<T[]>
+  findById(id: string): Promise<T | null>
+  create(data: CreateDto): Promise<T>
+  update(id: string, data: UpdateDto): Promise<T>
+  delete(id: string): Promise<void>
+}
+```
+
+## Source: security.md
+
+---
+paths:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+---
+# TypeScript/JavaScript Security
+
+> This file extends [common/security.md](../common/security.md) with TypeScript/JavaScript specific content.
+
+## Secret Management
+
+```typescript
+// NEVER: Hardcoded secrets
+const apiKey = "sk-proj-xxxxx"
+
+// ALWAYS: Environment variables
+const apiKey = process.env.OPENAI_API_KEY
+
+if (!apiKey) {
+  throw new Error('OPENAI_API_KEY not configured')
+}
+```
+
+## Agent Support
+
+- Use **security-reviewer** skill for comprehensive security audits
+
+## Source: testing.md
+
+---
+paths:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+---
+# TypeScript/JavaScript Testing
+
+> This file extends [common/testing.md](../common/testing.md) with TypeScript/JavaScript specific content.
+
+## E2E Testing
+
+Use **Playwright** as the E2E testing framework for critical user flows.
+
+## Agent Support
+
+- **e2e-runner** - Playwright E2E testing specialist
+
