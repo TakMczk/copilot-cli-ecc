@@ -1,4 +1,4 @@
-# Global Copilot Instructions (from Everything Claude Code common rules)
+# Global Copilot Instructions (Everything Claude Code port)
 
 ## Source: coding-style.md
 
@@ -97,7 +97,7 @@ MANDATORY workflow:
 
 Types: feat, fix, refactor, docs, test, chore, perf, ci
 
-Note: Attribution disabled globally via ~/.claude/settings.json.
+Note: Configure attribution and AI preferences in VS Code settings if needed.
 
 ## Pull Request Workflow
 
@@ -135,22 +135,11 @@ When creating PRs:
 
 # Performance Optimization
 
-## Model Selection Strategy
+## Model Usage Strategy
 
-**Haiku 4.5** (90% of Sonnet capability, 3x cost savings):
-- Lightweight agents with frequent invocation
-- Pair programming and code generation
-- Worker agents in multi-agent systems
-
-**Sonnet 4.6** (Best coding model):
-- Main development work
-- Orchestrating multi-agent workflows
-- Complex coding tasks
-
-**Opus 4.5** (Deepest reasoning):
-- Complex architectural decisions
-- Maximum reasoning requirements
-- Research and analysis tasks
+- Use a faster model for lightweight edits, formatting, and straightforward refactors
+- Use a stronger model for architecture, complex debugging, and deep reviews
+- Prefer the currently selected VS Code Copilot model unless task complexity requires switching
 
 ## Context Window Management
 
@@ -165,21 +154,13 @@ Lower context sensitivity tasks:
 - Documentation updates
 - Simple bug fixes
 
-## Extended Thinking + Plan Mode
-
-Extended thinking is enabled by default, reserving up to 31,999 tokens for internal reasoning.
-
-Control extended thinking via:
-- **Toggle**: Option+T (macOS) / Alt+T (Windows/Linux)
-- **Config**: Set `alwaysThinkingEnabled` in `~/.claude/settings.json`
-- **Budget cap**: `export MAX_THINKING_TOKENS=10000`
-- **Verbose mode**: Ctrl+O to see thinking output
+## Complex Task Workflow
 
 For complex tasks requiring deep reasoning:
-1. Ensure extended thinking is enabled (on by default)
-2. Enable **Plan Mode** for structured approach
-3. Use multiple critique rounds for thorough analysis
-4. Use split role sub-agents for diverse perspectives
+1. Build a short plan first
+2. Break work into verifiable milestones
+3. Use focused subagents where it improves parallelism or isolation
+4. Verify results after each milestone
 
 ## Build Troubleshooting
 
@@ -261,7 +242,7 @@ If security issue found:
 
 ## Available Agents
 
-Located in `~/.claude/agents/`:
+Located in `.github/agents/` (workspace) or user profile custom agents:
 
 | Agent | Purpose | When to Use |
 |-------|---------|-------------|
@@ -311,32 +292,29 @@ For complex problems, use split role sub-agents:
 
 # Hooks System
 
-## Hook Types
+## Hook Events
 
-- **PreToolUse**: Before tool execution (validation, parameter modification)
-- **PostToolUse**: After tool execution (auto-format, checks)
-- **Stop**: When session ends (final verification)
+Use VS Code Copilot hook lifecycle events:
+- `SessionStart`
+- `UserPromptSubmit`
+- `PreToolUse`
+- `PostToolUse`
+- `PreCompact`
+- `SubagentStart`
+- `SubagentStop`
+- `Stop`
 
-## Auto-Accept Permissions
+## Hook Practices
 
-Use with caution:
-- Enable for trusted, well-defined plans
-- Disable for exploratory work
-- Never use dangerously-skip-permissions flag
-- Configure `allowedTools` in `~/.claude.json` instead
+- Keep hooks deterministic and fast
+- Validate and sanitize all hook input
+- Use non-blocking behavior unless policy enforcement is required
+- Keep hook scripts in version control and review them like application code
 
-## TodoWrite Best Practices
+## Approval Safety
 
-Use TodoWrite tool to:
-- Track progress on multi-step tasks
-- Verify understanding of instructions
-- Enable real-time steering
-- Show granular implementation steps
-
-Todo list reveals:
-- Out of order steps
-- Missing items
-- Extra unnecessary items
-- Wrong granularity
-- Misinterpreted requirements
+Use auto-approval cautiously:
+- Enable only for trusted workflows
+- Disable for exploratory or high-risk operations
+- Review tool permissions regularly
 

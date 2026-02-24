@@ -2,16 +2,7 @@
 applyTo: "**/*.py"
 ---
 
-## Source: coding-style.md
-
----
-paths:
-  - "**/*.py"
-  - "**/*.pyi"
----
 # Python Coding Style
-
-> This file extends [common/coding-style.md](../common/coding-style.md) with Python specific content.
 
 ## Standards
 
@@ -46,39 +37,7 @@ class Point(NamedTuple):
 ## Reference
 
 See skill: `python-patterns` for comprehensive Python idioms and patterns.
-
-## Source: hooks.md
-
----
-paths:
-  - "**/*.py"
-  - "**/*.pyi"
----
-# Python Hooks
-
-> This file extends [common/hooks.md](../common/hooks.md) with Python specific content.
-
-## PostToolUse Hooks
-
-Configure in `~/.claude/settings.json`:
-
-- **black/ruff**: Auto-format `.py` files after edit
-- **mypy/pyright**: Run type checking after editing `.py` files
-
-## Warnings
-
-- Warn about `print()` statements in edited files (use `logging` module instead)
-
-## Source: patterns.md
-
----
-paths:
-  - "**/*.py"
-  - "**/*.pyi"
----
 # Python Patterns
-
-> This file extends [common/patterns.md](../common/patterns.md) with Python specific content.
 
 ## Protocol (Duck Typing)
 
@@ -110,17 +69,7 @@ class CreateUserRequest:
 ## Reference
 
 See skill: `python-patterns` for comprehensive patterns including decorators, concurrency, and package organization.
-
-## Source: security.md
-
----
-paths:
-  - "**/*.py"
-  - "**/*.pyi"
----
 # Python Security
-
-> This file extends [common/security.md](../common/security.md) with Python specific content.
 
 ## Secret Management
 
@@ -144,16 +93,7 @@ api_key = os.environ["OPENAI_API_KEY"]  # Raises KeyError if missing
 
 See skill: `django-security` for Django-specific security guidelines (if applicable).
 
-## Source: testing.md
-
----
-paths:
-  - "**/*.py"
-  - "**/*.pyi"
----
 # Python Testing
-
-> This file extends [common/testing.md](../common/testing.md) with Python specific content.
 
 ## Framework
 

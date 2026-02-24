@@ -2,18 +2,7 @@
 applyTo: "**/*.ts,**/*.tsx,**/*.js,**/*.jsx"
 ---
 
-## Source: coding-style.md
-
----
-paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.js"
-  - "**/*.jsx"
----
 # TypeScript/JavaScript Coding Style
-
-> This file extends [common/coding-style.md](../common/coding-style.md) with TypeScript/JavaScript specific content.
 
 ## Immutability
 
@@ -68,45 +57,7 @@ const validated = schema.parse(input)
 
 - No `console.log` statements in production code
 - Use proper logging libraries instead
-- See hooks for automatic detection
-
-## Source: hooks.md
-
----
-paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.js"
-  - "**/*.jsx"
----
-# TypeScript/JavaScript Hooks
-
-> This file extends [common/hooks.md](../common/hooks.md) with TypeScript/JavaScript specific content.
-
-## PostToolUse Hooks
-
-Configure in `~/.claude/settings.json`:
-
-- **Prettier**: Auto-format JS/TS files after edit
-- **TypeScript check**: Run `tsc` after editing `.ts`/`.tsx` files
-- **console.log warning**: Warn about `console.log` in edited files
-
-## Stop Hooks
-
-- **console.log audit**: Check all modified files for `console.log` before session ends
-
-## Source: patterns.md
-
----
-paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.js"
-  - "**/*.jsx"
----
 # TypeScript/JavaScript Patterns
-
-> This file extends [common/patterns.md](../common/patterns.md) with TypeScript/JavaScript specific content.
 
 ## API Response Format
 
@@ -161,8 +112,6 @@ paths:
 ---
 # TypeScript/JavaScript Security
 
-> This file extends [common/security.md](../common/security.md) with TypeScript/JavaScript specific content.
-
 ## Secret Management
 
 ```typescript
@@ -181,18 +130,7 @@ if (!apiKey) {
 
 - Use **security-reviewer** skill for comprehensive security audits
 
-## Source: testing.md
-
----
-paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.js"
-  - "**/*.jsx"
----
 # TypeScript/JavaScript Testing
-
-> This file extends [common/testing.md](../common/testing.md) with TypeScript/JavaScript specific content.
 
 ## E2E Testing
 

@@ -1,54 +1,51 @@
 {
-  "version": 1,
   "hooks": {
-    "sessionStart": [
+    "SessionStart": [
       {
         "type": "command",
-        "powershell": "node .github/scripts/hooks/session-start.js",
-        "timeoutSec": 20
+        "command": "node .github/scripts/hooks/session-start.js",
+        "timeout": 20
       }
     ],
-    "preToolUse": [
+    "PreToolUse": [
       {
         "type": "command",
-        "powershell": "node .github/scripts/hooks/suggest-compact.js",
-        "timeoutSec": 10
+        "command": "node .github/scripts/hooks/suggest-compact.js",
+        "timeout": 10
       }
     ],
-    "postToolUse": [
+    "PostToolUse": [
       {
         "type": "command",
-        "powershell": "node .github/scripts/hooks/post-edit-format.js",
-        "timeoutSec": 20
+        "command": "node .github/scripts/hooks/post-edit-format.js",
+        "timeout": 20
       },
       {
         "type": "command",
-        "powershell": "node .github/scripts/hooks/post-edit-typecheck.js",
-        "timeoutSec": 20
+        "command": "node .github/scripts/hooks/post-edit-typecheck.js",
+        "timeout": 20
       },
       {
         "type": "command",
-        "powershell": "node .github/scripts/hooks/post-edit-console-warn.js",
-        "timeoutSec": 15
+        "command": "node .github/scripts/hooks/post-edit-console-warn.js",
+        "timeout": 15
       }
     ],
-    "agentStop": [
+    "Stop": [
       {
         "type": "command",
-        "powershell": "node .github/scripts/hooks/check-console-log.js",
-        "timeoutSec": 20
-      }
-    ],
-    "sessionEnd": [
-      {
-        "type": "command",
-        "powershell": "node .github/scripts/hooks/session-end.js",
-        "timeoutSec": 20
+        "command": "node .github/scripts/hooks/check-console-log.js",
+        "timeout": 20
       },
       {
         "type": "command",
-        "powershell": "node .github/scripts/hooks/evaluate-session.js",
-        "timeoutSec": 30
+        "command": "node .github/scripts/hooks/session-end.js",
+        "timeout": 20
+      },
+      {
+        "type": "command",
+        "command": "node .github/scripts/hooks/evaluate-session.js",
+        "timeout": 30
       }
     ]
   }
