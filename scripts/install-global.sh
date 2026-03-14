@@ -8,6 +8,9 @@ COPILOT_SKILLS_DIR="${COPILOT_SKILLS_DIR:-$HOME/.copilot/skills}"
 ECC_GLOBAL_DIR="${ECC_GLOBAL_DIR:-$HOME/.copilot/ecc}"
 CLAUDE_SETTINGS_PATH="${CLAUDE_SETTINGS_PATH:-$HOME/.claude/settings.json}"
 
+echo "[warn] scripts/install-global.sh installs the VS Code / Claude-compatible layout."
+echo "[warn] For GitHub Copilot CLI, use: ./scripts/install-copilot-cli.sh"
+
 mkdir -p "$PROMPTS_DIR"
 mkdir -p "$COPILOT_SKILLS_DIR"
 mkdir -p "$ECC_GLOBAL_DIR/scripts/hooks"

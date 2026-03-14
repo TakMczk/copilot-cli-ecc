@@ -156,3 +156,7 @@ Verdict: BLOCK — HIGH issues must be fixed before merge.
 
 - **Approve**: No CRITICAL or HIGH issues
 - **Block**: Any CRITICAL or HIGH issues — must fix before merge
+
+## Reference
+
+For detailed Kotlin patterns and code examples, see `skill: kotlin-patterns`.

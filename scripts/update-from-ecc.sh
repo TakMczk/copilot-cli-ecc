@@ -91,4 +91,6 @@ cat > "$ROOT_DIR/.github/hooks/ecc-hooks.json" <<'JSON'
 JSON
 
 echo "[update] done"
-echo "[next] review diff, then run: ./scripts/install-global.sh"
+echo "[next] review diff, then reinstall for your target client:"
+echo "       - GitHub Copilot CLI: ./scripts/install-copilot-cli.sh"
+echo "       - VS Code / Claude compatibility layer: ./scripts/install-global.sh"
