@@ -267,7 +267,7 @@ sync_agents() {
   local current_entries_path="$TMP_DIR/agents.txt"
   local manifest_path="$MANIFEST_DIR/agents.txt"
 
-  find "$SOURCE_AGENTS_DIR" -maxdepth 1 -type f -name '*.md' -printf '%f\n' | sort >"$current_entries_path"
+  find "$SOURCE_AGENTS_DIR" -maxdepth 1 -type f -name '*.md' | sed 's|.*/||' | sort >"$current_entries_path"
 
   ensure_dir "$TARGET_AGENTS_DIR"
   remove_stale_entries "$manifest_path" "$current_entries_path" "$TARGET_AGENTS_DIR" "agent"
@@ -284,7 +284,7 @@ sync_extra_instructions() {
   local current_entries_path="$TMP_DIR/extra-instructions.txt"
   local manifest_path="$MANIFEST_DIR/extra-instructions.txt"
 
-  find "$SOURCE_EXTRA_INSTRUCTIONS_DIR" -maxdepth 1 -type f -name '*.instructions.md' -printf '%f\n' | sort >"$current_entries_path"
+  find "$SOURCE_EXTRA_INSTRUCTIONS_DIR" -maxdepth 1 -type f -name '*.instructions.md' | sed 's|.*/||' | sort >"$current_entries_path"
 
   ensure_dir "$TARGET_EXTRA_INSTRUCTIONS_DIR"
   remove_stale_entries "$manifest_path" "$current_entries_path" "$TARGET_EXTRA_INSTRUCTIONS_DIR" "instruction"
@@ -301,7 +301,7 @@ sync_skills() {
   local current_entries_path="$TMP_DIR/skills.txt"
   local manifest_path="$MANIFEST_DIR/skills.txt"
 
-  find "$SOURCE_SKILLS_DIR" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort >"$current_entries_path"
+  find "$SOURCE_SKILLS_DIR" -mindepth 1 -maxdepth 1 -type d | sed 's|.*/||' | sort >"$current_entries_path"
 
   ensure_dir "$TARGET_SKILLS_DIR"
   remove_stale_entries "$manifest_path" "$current_entries_path" "$TARGET_SKILLS_DIR" "skill"

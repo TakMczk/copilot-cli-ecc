@@ -48,15 +48,20 @@ const raw = JSON.parse(fs.readFileSync(sourceHooksPath, 'utf8'));
 
 const hooksDir = path.join(eccGlobalDir, 'scripts', 'hooks');
 const transformed = { hooks: {} };
+const shellQuote = value => `"${String(value).replace(/(["\\$`])/g, '\\$1')}"`;
 
 for (const [event, entries] of Object.entries(raw.hooks || {})) {
   transformed.hooks[event] = entries.map(entry => {
     const next = { ...entry };
     if (typeof next.command === 'string') {
-      next.command = next.command.replace(
-        /node \.github\/scripts\/hooks\/([\w.-]+\.js)/,
-        (_, scriptName) => `node "${path.join(hooksDir, scriptName)}"`
+      const rewritten = next.command.replace(
+        /\.github\/scripts\/hooks\/([\w.-]+\.(?:js|sh))/g,
+        (_, scriptName) => shellQuote(path.join(hooksDir, scriptName))
       );
+
+      if (rewritten !== next.command) {
+        next.command = `(export CLAUDE_PLUGIN_ROOT=${shellQuote(eccGlobalDir)}; ${rewritten})`;
+      }
     }
     return next;
   });

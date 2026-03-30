@@ -17,7 +17,7 @@
 | `scripts/hooks/*.js` | `.github/scripts/hooks/*.js` | Copilot Hooks から実行 |
 | `scripts/lib/*.js` | `.github/scripts/lib/*.js` | Hooks 依存を補完 |
 | `hooks/hooks.json` (Claude) | `.github/hooks/ecc-hooks.json` | Copilot 用のイベント・キーへ変換済み |
-| `rules/common + language` | `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md` | Copilot instructions 形式へ移植 |
+| `rules/common + language` | `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md` | upstream rules から Copilot instructions を自動生成 |
 
 ## 仕様差分ポリシー
 
@@ -124,10 +124,16 @@ VS Code / Claude 互換レイヤーも併用している場合は、続けて以
 `update-from-ecc.sh` は以下を自動で実施します。
 
 - upstream の `agents`, `skills`, `scripts/hooks`, `scripts/lib` を同期
+- upstream の `rules/common` と `rules/<language>` から Copilot instructions を再生成
 - Copilot 非互換の `model:` 行を自動削除
-- `.github/hooks/ecc-hooks.json` を Copilot 用フォーマットに再生成
-- `.instructions.md` 内の Claude 固有ブロック（`paths:` や壊れた extends 参照）を自動除去
+- `.github/hooks/ecc-hooks.json` を最新 hook script + `run-with-flags.js` ベースの Copilot 用フォーマットに再生成
 - 更新後は利用しているクライアントに応じて `install-copilot-cli.sh` または `install-global.sh` を再実行する
+
+## 週次自動更新
+
+- `.github/workflows/weekly-ecc-sync.yml` で毎週 upstream ECC を同期できます
+- `workflow_dispatch` にも対応しているため、必要なときに手動実行も可能です
+- 差分が出た場合は `main` へ直接 push せず、自動で Pull Request を作成します
 
 ## 検証チェックリスト
 

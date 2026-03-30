@@ -1,0 +1,53 @@
+name: Weekly ECC sync
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: weekly-ecc-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync from upstream ECC
+        run: ./scripts/update-from-ecc.sh
+
+      - name: Validate generated assets
+        run: |
+          bash -n scripts/*.sh
+          jq empty .github/hooks/ecc-hooks.json
+          find .github/scripts -type f -name '*.js' -print0 | xargs -0 -n1 node --check
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: automation/weekly-ecc-sync
+          delete-branch: true
+          title: chore: weekly ECC sync
+          commit-message: |
+            chore: weekly ECC sync
+
+            Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
+          body: |
+            Automated weekly sync from `affaan-m/everything-claude-code`.
+
+            This PR was created by `.github/workflows/weekly-ecc-sync.yml` and includes:
+            - refreshed agents, skills, hooks, and shared libs
+            - regenerated Copilot instruction files from upstream `rules/`
+            - regenerated Copilot hook configuration
+
+            Please review the generated diff before merging.

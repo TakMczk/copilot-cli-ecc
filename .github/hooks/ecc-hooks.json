@@ -3,49 +3,94 @@
     "SessionStart": [
       {
         "type": "command",
-        "command": "node .github/scripts/hooks/session-start.js",
-        "timeout": 20
+        "command": "node .github/scripts/hooks/run-with-flags.js \"session:start\" \"scripts/hooks/session-start.js\" \"minimal,standard,strict\"",
+        "timeout": 30
       }
     ],
     "PreToolUse": [
       {
         "type": "command",
-        "command": "node .github/scripts/hooks/suggest-compact.js",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"pre:bash:commit-quality\" \"scripts/hooks/pre-bash-commit-quality.js\" \"strict\"",
+        "timeout": 15
+      },
+      {
+        "type": "command",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"pre:write:doc-file-warning\" \"scripts/hooks/doc-file-warning.js\" \"standard,strict\"",
+        "timeout": 10
+      },
+      {
+        "type": "command",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"pre:edit-write:suggest-compact\" \"scripts/hooks/suggest-compact.js\" \"standard,strict\"",
+        "timeout": 10
+      },
+      {
+        "type": "command",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"pre:config-protection\" \"scripts/hooks/config-protection.js\" \"standard,strict\"",
+        "timeout": 5
+      },
+      {
+        "type": "command",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"pre:governance-capture\" \"scripts/hooks/governance-capture.js\" \"standard,strict\"",
+        "timeout": 10
+      },
+      {
+        "type": "command",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"pre:mcp-health-check\" \"scripts/hooks/mcp-health-check.js\" \"standard,strict\"",
         "timeout": 10
       }
     ],
     "PostToolUse": [
       {
         "type": "command",
-        "command": "node .github/scripts/hooks/post-edit-format.js",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"post:quality-gate\" \"scripts/hooks/quality-gate.js\" \"standard,strict\"",
+        "timeout": 30
+      },
+      {
+        "type": "command",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"post:edit:format\" \"scripts/hooks/post-edit-format.js\" \"strict\"",
         "timeout": 20
       },
       {
         "type": "command",
-        "command": "node .github/scripts/hooks/post-edit-typecheck.js",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"post:edit:typecheck\" \"scripts/hooks/post-edit-typecheck.js\" \"strict\"",
         "timeout": 20
       },
       {
         "type": "command",
-        "command": "node .github/scripts/hooks/post-edit-console-warn.js",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"post:edit:console-warn\" \"scripts/hooks/post-edit-console-warn.js\" \"standard,strict\"",
+        "timeout": 15
+      },
+      {
+        "type": "command",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"post:governance-capture\" \"scripts/hooks/governance-capture.js\" \"standard,strict\"",
         "timeout": 15
       }
     ],
     "Stop": [
       {
         "type": "command",
-        "command": "node .github/scripts/hooks/check-console-log.js",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"stop:check-console-log\" \"scripts/hooks/check-console-log.js\" \"standard,strict\"",
         "timeout": 20
       },
       {
         "type": "command",
-        "command": "node .github/scripts/hooks/session-end.js",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"stop:session-end\" \"scripts/hooks/session-end.js\" \"minimal,standard,strict\"",
         "timeout": 20
       },
       {
         "type": "command",
-        "command": "node .github/scripts/hooks/evaluate-session.js",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"stop:evaluate-session\" \"scripts/hooks/evaluate-session.js\" \"minimal,standard,strict\"",
         "timeout": 30
+      },
+      {
+        "type": "command",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"stop:cost-tracker\" \"scripts/hooks/cost-tracker.js\" \"minimal,standard,strict\"",
+        "timeout": 30
+      },
+      {
+        "type": "command",
+        "command": "node .github/scripts/hooks/run-with-flags.js \"stop:desktop-notify\" \"scripts/hooks/desktop-notify.js\" \"standard,strict\"",
+        "timeout": 20
       }
     ]
   }
