@@ -2,7 +2,10 @@
 applyTo: "**/*.py"
 ---
 
+## Source: coding-style.md
+
 # Python Coding Style
+
 
 ## Standards
 
@@ -37,7 +40,12 @@ class Point(NamedTuple):
 ## Reference
 
 See skill: `python-patterns` for comprehensive Python idioms and patterns.
+
+
+## Source: patterns.md
+
 # Python Patterns
+
 
 ## Protocol (Duck Typing)
 
@@ -69,7 +77,12 @@ class CreateUserRequest:
 ## Reference
 
 See skill: `python-patterns` for comprehensive patterns including decorators, concurrency, and package organization.
+
+
+## Source: security.md
+
 # Python Security
+
 
 ## Secret Management
 
@@ -93,7 +106,11 @@ api_key = os.environ["OPENAI_API_KEY"]  # Raises KeyError if missing
 
 See skill: `django-security` for Django-specific security guidelines (if applicable).
 
+
+## Source: testing.md
+
 # Python Testing
+
 
 ## Framework
 
@@ -124,4 +141,5 @@ def test_database_connection():
 ## Reference
 
 See skill: `python-testing` for detailed pytest patterns and fixtures.
+
 

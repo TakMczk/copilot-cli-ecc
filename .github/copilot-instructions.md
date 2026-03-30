@@ -51,6 +51,7 @@ Before marking work complete:
 - [ ] No hardcoded values (use constants or config)
 - [ ] No mutation (immutable patterns used)
 
+
 ## Source: testing.md
 
 # Testing Requirements
@@ -83,12 +84,12 @@ MANDATORY workflow:
 
 - **tdd-guide** - Use PROACTIVELY for new features, enforces write-tests-first
 
+
 ## Source: git-workflow.md
 
 # Git Workflow
 
 ## Commit Message Format
-
 ```
 <type>: <description>
 
@@ -97,7 +98,7 @@ MANDATORY workflow:
 
 Types: feat, fix, refactor, docs, test, chore, perf, ci
 
-Note: Configure attribution and AI preferences in VS Code settings if needed.
+Note: Attribution disabled globally via ~/.claude/settings.json.
 
 ## Pull Request Workflow
 
@@ -108,38 +109,30 @@ When creating PRs:
 4. Include test plan with TODOs
 5. Push with `-u` flag if new branch
 
-## Feature Implementation Workflow
+> For the full development process (planning, TDD, code review) before git operations,
+> see [development-workflow.md](./development-workflow.md).
 
-1. **Plan First**
-   - Use **planner** agent to create implementation plan
-   - Identify dependencies and risks
-   - Break down into phases
-
-2. **TDD Approach**
-   - Use **tdd-guide** agent
-   - Write tests first (RED)
-   - Implement to pass tests (GREEN)
-   - Refactor (IMPROVE)
-   - Verify 80%+ coverage
-
-3. **Code Review**
-   - Use **code-reviewer** agent immediately after writing code
-   - Address CRITICAL and HIGH issues
-   - Fix MEDIUM issues when possible
-
-4. **Commit & Push**
-   - Detailed commit messages
-   - Follow conventional commits format
 
 ## Source: performance.md
 
 # Performance Optimization
 
-## Model Usage Strategy
+## Model Selection Strategy
 
-- Use a faster model for lightweight edits, formatting, and straightforward refactors
-- Use a stronger model for architecture, complex debugging, and deep reviews
-- Prefer the currently selected VS Code Copilot model unless task complexity requires switching
+**Haiku 4.5** (90% of Sonnet capability, 3x cost savings):
+- Lightweight agents with frequent invocation
+- Pair programming and code generation
+- Worker agents in multi-agent systems
+
+**Sonnet 4.6** (Best coding model):
+- Main development work
+- Orchestrating multi-agent workflows
+- Complex coding tasks
+
+**Opus 4.5** (Deepest reasoning):
+- Complex architectural decisions
+- Maximum reasoning requirements
+- Research and analysis tasks
 
 ## Context Window Management
 
@@ -154,13 +147,21 @@ Lower context sensitivity tasks:
 - Documentation updates
 - Simple bug fixes
 
-## Complex Task Workflow
+## Extended Thinking + Plan Mode
+
+Extended thinking is enabled by default, reserving up to 31,999 tokens for internal reasoning.
+
+Control extended thinking via:
+- **Toggle**: Option+T (macOS) / Alt+T (Windows/Linux)
+- **Config**: Set `alwaysThinkingEnabled` in `~/.claude/settings.json`
+- **Budget cap**: `export MAX_THINKING_TOKENS=10000`
+- **Verbose mode**: Ctrl+O to see thinking output
 
 For complex tasks requiring deep reasoning:
-1. Build a short plan first
-2. Break work into verifiable milestones
-3. Use focused subagents where it improves parallelism or isolation
-4. Verify results after each milestone
+1. Ensure extended thinking is enabled (on by default)
+2. Enable **Plan Mode** for structured approach
+3. Use multiple critique rounds for thorough analysis
+4. Use split role sub-agents for diverse perspectives
 
 ## Build Troubleshooting
 
@@ -169,6 +170,7 @@ If build fails:
 2. Analyze error messages
 3. Fix incrementally
 4. Verify after each fix
+
 
 ## Source: patterns.md
 
@@ -204,6 +206,7 @@ Use a consistent envelope for all API responses:
 - Include an error message field (nullable on success)
 - Include metadata for paginated responses (total, page, limit)
 
+
 ## Source: security.md
 
 # Security Guidelines
@@ -236,13 +239,14 @@ If security issue found:
 4. Rotate any exposed secrets
 5. Review entire codebase for similar issues
 
+
 ## Source: agents.md
 
 # Agent Orchestration
 
 ## Available Agents
 
-Located in `.github/agents/` (workspace) or user profile custom agents:
+Located in `~/.claude/agents/`:
 
 | Agent | Purpose | When to Use |
 |-------|---------|-------------|
@@ -255,6 +259,7 @@ Located in `.github/agents/` (workspace) or user profile custom agents:
 | e2e-runner | E2E testing | Critical user flows |
 | refactor-cleaner | Dead code cleanup | Code maintenance |
 | doc-updater | Documentation | Updating docs |
+| rust-reviewer | Rust code review | Rust projects |
 
 ## Immediate Agent Usage
 
@@ -288,33 +293,213 @@ For complex problems, use split role sub-agents:
 - Consistency reviewer
 - Redundancy checker
 
+
 ## Source: hooks.md
 
 # Hooks System
 
-## Hook Events
+## Hook Types
 
-Use VS Code Copilot hook lifecycle events:
-- `SessionStart`
-- `UserPromptSubmit`
-- `PreToolUse`
-- `PostToolUse`
-- `PreCompact`
-- `SubagentStart`
-- `SubagentStop`
-- `Stop`
+- **PreToolUse**: Before tool execution (validation, parameter modification)
+- **PostToolUse**: After tool execution (auto-format, checks)
+- **Stop**: When session ends (final verification)
 
-## Hook Practices
+## Auto-Accept Permissions
 
-- Keep hooks deterministic and fast
-- Validate and sanitize all hook input
-- Use non-blocking behavior unless policy enforcement is required
-- Keep hook scripts in version control and review them like application code
+Use with caution:
+- Enable for trusted, well-defined plans
+- Disable for exploratory work
+- Never use dangerously-skip-permissions flag
+- Configure `allowedTools` in `~/.claude.json` instead
 
-## Approval Safety
+## TodoWrite Best Practices
 
-Use auto-approval cautiously:
-- Enable only for trusted workflows
-- Disable for exploratory or high-risk operations
-- Review tool permissions regularly
+Use TodoWrite tool to:
+- Track progress on multi-step tasks
+- Verify understanding of instructions
+- Enable real-time steering
+- Show granular implementation steps
+
+Todo list reveals:
+- Out of order steps
+- Missing items
+- Extra unnecessary items
+- Wrong granularity
+- Misinterpreted requirements
+
+
+## Source: code-review.md
+
+# Code Review Standards
+
+## Purpose
+
+Code review ensures quality, security, and maintainability before code is merged. This rule defines when and how to conduct code reviews.
+
+## When to Review
+
+**MANDATORY review triggers:**
+
+- After writing or modifying code
+- Before any commit to shared branches
+- When security-sensitive code is changed (auth, payments, user data)
+- When architectural changes are made
+- Before merging pull requests
+
+**Pre-Review Requirements:**
+
+Before requesting review, ensure:
+
+- All automated checks (CI/CD) are passing
+- Merge conflicts are resolved
+- Branch is up to date with target branch
+
+## Review Checklist
+
+Before marking code complete:
+
+- [ ] Code is readable and well-named
+- [ ] Functions are focused (<50 lines)
+- [ ] Files are cohesive (<800 lines)
+- [ ] No deep nesting (>4 levels)
+- [ ] Errors are handled explicitly
+- [ ] No hardcoded secrets or credentials
+- [ ] No console.log or debug statements
+- [ ] Tests exist for new functionality
+- [ ] Test coverage meets 80% minimum
+
+## Security Review Triggers
+
+**STOP and use security-reviewer agent when:**
+
+- Authentication or authorization code
+- User input handling
+- Database queries
+- File system operations
+- External API calls
+- Cryptographic operations
+- Payment or financial code
+
+## Review Severity Levels
+
+| Level | Meaning | Action |
+|-------|---------|--------|
+| CRITICAL | Security vulnerability or data loss risk | **BLOCK** - Must fix before merge |
+| HIGH | Bug or significant quality issue | **WARN** - Should fix before merge |
+| MEDIUM | Maintainability concern | **INFO** - Consider fixing |
+| LOW | Style or minor suggestion | **NOTE** - Optional |
+
+## Agent Usage
+
+Use these agents for code review:
+
+| Agent | Purpose |
+|-------|---------|
+| **code-reviewer** | General code quality, patterns, best practices |
+| **security-reviewer** | Security vulnerabilities, OWASP Top 10 |
+| **typescript-reviewer** | TypeScript/JavaScript specific issues |
+| **python-reviewer** | Python specific issues |
+| **go-reviewer** | Go specific issues |
+| **rust-reviewer** | Rust specific issues |
+
+## Review Workflow
+
+```
+1. Run git diff to understand changes
+2. Check security checklist first
+3. Review code quality checklist
+4. Run relevant tests
+5. Verify coverage >= 80%
+6. Use appropriate agent for detailed review
+```
+
+## Common Issues to Catch
+
+### Security
+
+- Hardcoded credentials (API keys, passwords, tokens)
+- SQL injection (string concatenation in queries)
+- XSS vulnerabilities (unescaped user input)
+- Path traversal (unsanitized file paths)
+- CSRF protection missing
+- Authentication bypasses
+
+### Code Quality
+
+- Large functions (>50 lines) - split into smaller
+- Large files (>800 lines) - extract modules
+- Deep nesting (>4 levels) - use early returns
+- Missing error handling - handle explicitly
+- Mutation patterns - prefer immutable operations
+- Missing tests - add test coverage
+
+### Performance
+
+- N+1 queries - use JOINs or batching
+- Missing pagination - add LIMIT to queries
+- Unbounded queries - add constraints
+- Missing caching - cache expensive operations
+
+## Approval Criteria
+
+- **Approve**: No CRITICAL or HIGH issues
+- **Warning**: Only HIGH issues (merge with caution)
+- **Block**: CRITICAL issues found
+
+## Integration with Other Rules
+
+This rule works with:
+
+- [testing.md](testing.md) - Test coverage requirements
+- [security.md](security.md) - Security checklist
+- [git-workflow.md](git-workflow.md) - Commit standards
+- [agents.md](agents.md) - Agent delegation
+
+
+## Source: development-workflow.md
+
+# Development Workflow
+
+
+The Feature Implementation Workflow describes the development pipeline: research, planning, TDD, code review, and then committing to git.
+
+## Feature Implementation Workflow
+
+0. **Research & Reuse** _(mandatory before any new implementation)_
+   - **GitHub code search first:** Run `gh search repos` and `gh search code` to find existing implementations, templates, and patterns before writing anything new.
+   - **Library docs second:** Use Context7 or primary vendor docs to confirm API behavior, package usage, and version-specific details before implementing.
+   - **Exa only when the first two are insufficient:** Use Exa for broader web research or discovery after GitHub search and primary docs.
+   - **Check package registries:** Search npm, PyPI, crates.io, and other registries before writing utility code. Prefer battle-tested libraries over hand-rolled solutions.
+   - **Search for adaptable implementations:** Look for open-source projects that solve 80%+ of the problem and can be forked, ported, or wrapped.
+   - Prefer adopting or porting a proven approach over writing net-new code when it meets the requirement.
+
+1. **Plan First**
+   - Use **planner** agent to create implementation plan
+   - Generate planning docs before coding: PRD, architecture, system_design, tech_doc, task_list
+   - Identify dependencies and risks
+   - Break down into phases
+
+2. **TDD Approach**
+   - Use **tdd-guide** agent
+   - Write tests first (RED)
+   - Implement to pass tests (GREEN)
+   - Refactor (IMPROVE)
+   - Verify 80%+ coverage
+
+3. **Code Review**
+   - Use **code-reviewer** agent immediately after writing code
+   - Address CRITICAL and HIGH issues
+   - Fix MEDIUM issues when possible
+
+4. **Commit & Push**
+   - Detailed commit messages
+   - Follow conventional commits format
+   - See [git-workflow.md](./git-workflow.md) for commit message format and PR process
+
+5. **Pre-Review Checks**
+   - Verify all automated checks (CI/CD) are passing
+   - Resolve any merge conflicts
+   - Ensure branch is up to date with target branch
+   - Only request review after these checks pass
+
 
