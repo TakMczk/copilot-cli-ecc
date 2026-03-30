@@ -37,7 +37,7 @@ jobs:
         with:
           branch: automation/weekly-ecc-sync
           delete-branch: true
-          title: chore: weekly ECC sync
+          title: "chore: weekly ECC sync"
           commit-message: |
             chore: weekly ECC sync
 
