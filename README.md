@@ -134,6 +134,7 @@ VS Code / Claude 互換レイヤーも併用している場合は、続けて以
 - `.github/workflows/weekly-ecc-sync.yml` で毎週 upstream ECC を同期できます
 - `workflow_dispatch` にも対応しているため、必要なときに手動実行も可能です
 - 差分が出た場合は `main` へ直接 push せず、自動で Pull Request を作成します
+- この PR 自動作成を使うには、GitHub リポジトリ設定の `Settings > Actions > General > Workflow permissions` で `Read and write permissions` と `Allow GitHub Actions to create and approve pull requests` を有効化してください
 
 ## 検証チェックリスト
 
