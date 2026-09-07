@@ -16,11 +16,32 @@ CORRECT: update(original, field, value) → returns new copy with change
 
 Rationale: Immutable data prevents hidden side effects, makes debugging easier, and enables safe concurrency.
 
+## Core Principles
+
+### KISS (Keep It Simple)
+
+- Prefer the simplest solution that actually works
+- Avoid premature optimization
+- Optimize for clarity over cleverness
+
+### DRY (Don't Repeat Yourself)
+
+- Extract repeated logic into shared functions or utilities
+- Avoid copy-paste implementation drift
+- Introduce abstractions when repetition is real, not speculative
+
+### YAGNI (You Aren't Gonna Need It)
+
+- Do not build features or abstractions before they are needed
+- Avoid speculative generality
+- Start simple, then refactor when the pressure is real
+
 ## File Organization
 
 MANY SMALL FILES > FEW LARGE FILES:
 - High cohesion, low coupling
-- 200-400 lines typical, 800 max
+- 200-400 lines typical, with 800 lines as a soft maintainability ceiling for source files
+- Test, generated, and vendored files may exceed the ceiling when their size is justified by their role
 - Extract utilities from large modules
 - Organize by feature/domain, not by type
 
@@ -39,6 +60,28 @@ ALWAYS validate at system boundaries:
 - Use schema-based validation where available
 - Fail fast with clear error messages
 - Never trust external data (API responses, user input, file content)
+
+## Naming Conventions
+
+- Variables and functions: `camelCase` with descriptive names
+- Booleans: prefer `is`, `has`, `should`, or `can` prefixes
+- Interfaces, types, and components: `PascalCase`
+- Constants: `UPPER_SNAKE_CASE`
+- Custom hooks: `camelCase` with a `use` prefix
+
+## Code Smells to Avoid
+
+### Deep Nesting
+
+Prefer early returns over nested conditionals once the logic starts stacking.
+
+### Magic Numbers
+
+Use named constants for meaningful thresholds, delays, and limits.
+
+### Long Functions
+
+Split large functions into focused pieces with clear responsibilities.
 
 ## Code Quality Checklist
 
@@ -84,6 +127,34 @@ MANDATORY workflow:
 
 - **tdd-guide** - Use PROACTIVELY for new features, enforces write-tests-first
 
+## Test Structure (AAA Pattern)
+
+Prefer Arrange-Act-Assert structure for tests:
+
+```typescript
+test('calculates similarity correctly', () => {
+  // Arrange
+  const vector1 = [1, 0, 0]
+  const vector2 = [0, 1, 0]
+
+  // Act
+  const similarity = calculateCosineSimilarity(vector1, vector2)
+
+  // Assert
+  expect(similarity).toBe(0)
+})
+```
+
+### Test Naming
+
+Use descriptive names that explain the behavior under test:
+
+```typescript
+test('returns empty array when no markets match query', () => {})
+test('throws error when API key is missing', () => {})
+test('falls back to substring search when Redis is unavailable', () => {})
+```
+
 
 ## Source: git-workflow.md
 
@@ -98,7 +169,7 @@ MANDATORY workflow:
 
 Types: feat, fix, refactor, docs, test, chore, perf, ci
 
-Note: Attribution disabled globally via ~/.claude/settings.json.
+Note: ECC-managed installs set `"includeCoAuthoredBy": false` in `~/.claude/settings.json`, so commits carry no `Co-Authored-By` trailer by default. To keep Claude attribution, set `"includeCoAuthoredBy": true` or configure `attribution`; ECC never overwrites an explicit choice.
 
 ## Pull Request Workflow
 
@@ -119,17 +190,17 @@ When creating PRs:
 
 ## Model Selection Strategy
 
-**Haiku 4.5** (90% of Sonnet capability, 3x cost savings):
+**Haiku** (90% of Sonnet capability, 3x cost savings):
 - Lightweight agents with frequent invocation
 - Pair programming and code generation
 - Worker agents in multi-agent systems
 
-**Sonnet 4.6** (Best coding model):
+**Sonnet** (Best coding model):
 - Main development work
 - Orchestrating multi-agent workflows
 - Complex coding tasks
 
-**Opus 4.5** (Deepest reasoning):
+**Opus** (Deepest reasoning):
 - Complex architectural decisions
 - Maximum reasoning requirements
 - Research and analysis tasks
@@ -154,7 +225,7 @@ Extended thinking is enabled by default, reserving up to 31,999 tokens for inter
 Control extended thinking via:
 - **Toggle**: Option+T (macOS) / Alt+T (Windows/Linux)
 - **Config**: Set `alwaysThinkingEnabled` in `~/.claude/settings.json`
-- **Budget cap**: `export MAX_THINKING_TOKENS=10000`
+- **Budget cap**: `export MAX_THINKING_TOKENS=10000` (bash) or `$env:MAX_THINKING_TOKENS = "10000"` (PowerShell)
 - **Verbose mode**: Ctrl+O to see thinking output
 
 For complex tasks requiring deep reasoning:
@@ -260,6 +331,7 @@ Located in `~/.claude/agents/`:
 | refactor-cleaner | Dead code cleanup | Code maintenance |
 | doc-updater | Documentation | Updating docs |
 | rust-reviewer | Rust code review | Rust projects |
+| harmonyos-app-resolver | HarmonyOS app development | HarmonyOS/ArkTS projects |
 
 ## Immediate Agent Usage
 
@@ -283,6 +355,16 @@ Launch 3 agents in parallel:
 # BAD: Sequential when unnecessary
 First agent 1, then agent 2, then agent 3
 ```
+
+## Delegation Completion Contract
+
+Applies to every agent at every depth (parent, child, grandchild):
+
+1. **Your final message IS the deliverable.** Never end your turn with "waiting for background agents" — a spawned task is not a completed task. Ending your turn while children are running orphans their results (completed children cannot notify a parent whose turn has ended).
+2. **If you delegate, you own collection.** Wait for results, integrate them, then return. Fire-and-forget delegation is forbidden.
+3. **Decompose only when the work cannot fit in one context.** Do not re-delegate a task already sized for a single agent — depth is an outcome, not a plan.
+
+> Rationale: observed failure mode — research agents followed "Parallel Task Execution" above, spawned children, and returned "waiting" as their final answer. All children completed successfully but their results were orphaned. The parallel rule without a completion contract produces zombie tasks.
 
 ## Multi-Perspective Analysis
 
@@ -360,7 +442,7 @@ Before marking code complete:
 
 - [ ] Code is readable and well-named
 - [ ] Functions are focused (<50 lines)
-- [ ] Files are cohesive (<800 lines)
+- [ ] Source files are cohesive (under the 800-line soft maintainability ceiling, or include a reason for a deliberate exception)
 - [ ] No deep nesting (>4 levels)
 - [ ] Errors are handled explicitly
 - [ ] No hardcoded secrets or credentials
@@ -386,7 +468,7 @@ Before marking code complete:
 |-------|---------|--------|
 | CRITICAL | Security vulnerability or data loss risk | **BLOCK** - Must fix before merge |
 | HIGH | Bug or significant quality issue | **WARN** - Should fix before merge |
-| MEDIUM | Maintainability concern | **INFO** - Consider fixing |
+| MEDIUM | Maintainability concern, including an unexplained source file over the soft 800-line ceiling | **INFO** - Consider fixing |
 | LOW | Style or minor suggestion | **NOTE** - Optional |
 
 ## Agent Usage
