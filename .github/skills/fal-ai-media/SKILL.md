@@ -1,10 +1,15 @@
 ---
 name: fal-ai-media
 description: Unified media generation via fal.ai MCP — image, video, and audio. Covers text-to-image (Nano Banana), text/image-to-video (Seedance, Kling, Veo 3), text-to-speech (CSM-1B), and video-to-audio (ThinkSound). Use when the user wants to generate images, videos, or audio with AI.
-origin: ECC
+metadata:
+  origin: ECC
 ---
 
 # fal.ai Media Generation
+
+> **Drift-prone skill.** fal.ai model IDs, pricing, inputs, and MCP tool names
+> change quickly. Search or fetch the current model metadata before promising a
+> specific model, parameter, output format, or cost.
 
 Generate images, videos, and audio using fal.ai models via MCP.
 
@@ -279,6 +284,11 @@ models()
 
 ## Related Skills
 
+- `tasteforge-video` — Offline taste distillation and modality planning. Its
+  endpoint candidates and request manifests are reference-only, not submitted
+  jobs or saved Fal workflows. A TasteForge handoff does not authorize upload
+  or generation; use a separately authorized provider workflow and verify its
+  current endpoint schema before executing.
 - `videodb` — Video processing, editing, and streaming
 - `video-editing` — AI-powered video editing workflows
 - `content-engine` — Content creation for social platforms
