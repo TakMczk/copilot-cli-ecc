@@ -9,6 +9,7 @@
 'use strict';
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 
 // ── Caches (per-process, cleared on next hook invocation) ───────────
@@ -31,7 +32,16 @@ const PRETTIER_CONFIGS = [
   '.prettierrc.toml',
   'prettier.config.js',
   'prettier.config.cjs',
-  'prettier.config.mjs'
+  'prettier.config.mjs',
+  // The rest of the names Prettier's config searcher looks for
+  // (src/config/prettier-config/config-searcher.js).
+  '.prettierrc.json5',
+  '.prettierrc.ts',
+  '.prettierrc.mts',
+  '.prettierrc.cts',
+  'prettier.config.ts',
+  'prettier.config.mts',
+  'prettier.config.cts'
 ];
 
 const PROJECT_ROOT_MARKERS = ['package.json', ...BIOME_CONFIGS, ...PRETTIER_CONFIGS];
@@ -58,8 +68,12 @@ const FORMATTER_PACKAGES = {
 function findProjectRoot(startDir) {
   if (projectRootCache.has(startDir)) return projectRootCache.get(startDir);
 
+  const homeDir = os.homedir();
   let dir = startDir;
   while (dir !== path.dirname(dir)) {
+    // Stop before checking the home directory to avoid treating global
+    // dotfiles (e.g. ~/.prettierrc) as a project root marker.
+    if (dir === homeDir) break;
     for (const marker of PROJECT_ROOT_MARKERS) {
       if (fs.existsSync(path.join(dir, marker))) {
         projectRootCache.set(startDir, dir);

@@ -15,19 +15,25 @@ export const isLinux: boolean;
 /** Get the user's home directory (cross-platform) */
 export function getHomeDir(): string;
 
-/** Get the Claude config directory (~/.claude) */
+/**
+ * ECC agent data root for memory persistence and related state.
+ * Defaults to ~/.claude; override with ECC_AGENT_DATA_HOME (e.g. ~/.cursor/ecc).
+ */
+export function getAgentDataHome(): string;
+
+/** Get the agent data directory (alias of getAgentDataHome) */
 export function getClaudeDir(): string;
 
-/** Get the canonical ECC sessions directory (~/.claude/session-data) */
+/** Get the canonical ECC sessions directory ($ECC_AGENT_DATA_HOME/session-data) */
 export function getSessionsDir(): string;
 
-/** Get the legacy Claude-managed sessions directory (~/.claude/sessions) */
+/** Get the legacy sessions directory ($ECC_AGENT_DATA_HOME/sessions) */
 export function getLegacySessionsDir(): string;
 
 /** Get session directories to search, with canonical storage first and legacy fallback second */
 export function getSessionSearchDirs(): string[];
 
-/** Get the learned skills directory (~/.claude/skills/learned) */
+/** Get the learned skills directory ($ECC_AGENT_DATA_HOME/skills/learned) */
 export function getLearnedSkillsDir(): string;
 
 /** Get the temp directory (cross-platform) */
@@ -187,10 +193,10 @@ export interface CommandResult {
 export function runCommand(cmd: string, options?: ExecSyncOptions): CommandResult;
 
 /** Check if the current directory is inside a git repository */
-export function isGitRepo(): boolean;
+export function isGitRepo(options?: ExecSyncOptions): boolean;
 
 /**
  * Get git modified files (staged + unstaged), optionally filtered by regex patterns.
  * Invalid regex patterns are silently skipped.
  */
-export function getGitModifiedFiles(patterns?: string[]): string[];
+export function getGitModifiedFiles(patterns?: string[], options?: ExecSyncOptions): string[];

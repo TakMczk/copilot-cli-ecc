@@ -5,9 +5,10 @@
  * No external dependencies. Node.js stdlib only.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
-import { resolve, basename } from 'path';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { resolve, dirname } from 'path';
 import { homedir } from 'os';
+import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';
 import { randomBytes } from 'crypto';
 
@@ -17,7 +18,7 @@ export const CK_HOME          = resolve(homedir(), '.claude', 'ck');
 export const CONTEXTS_DIR     = resolve(CK_HOME, 'contexts');
 export const PROJECTS_FILE    = resolve(CK_HOME, 'projects.json');
 export const CURRENT_SESSION  = resolve(CK_HOME, 'current-session.json');
-export const SKILL_FILE       = resolve(homedir(), '.claude', 'skills', 'ck', 'SKILL.md');
+export const SKILL_FILE       = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'SKILL.md');
 
 // ─── JSON I/O ─────────────────────────────────────────────────────────────────
 
@@ -183,8 +184,9 @@ export function gitSummary(projectPath, sinceDate) {
 // ─── Native memory path encoding ──────────────────────────────────────────────
 
 export function encodeProjectPath(absolutePath) {
-  // "/Users/sree/dev/app" -> "-Users-sree-dev-app"
-  return absolutePath.replace(/\//g, '-');
+  // Same rule as Claude Code: every non-alphanumeric character becomes '-'.
+  // "/Users/sree/dev/my app" -> "-Users-sree-dev-my-app"
+  return absolutePath.replace(/[^A-Za-z0-9]/g, '-');
 }
 
 export function nativeMemoryDir(absolutePath) {
@@ -270,7 +272,7 @@ export function renderContextMd(ctx) {
 }
 
 /** Render the bordered briefing box used by /ck:resume */
-export function renderBriefingBox(ctx, meta = {}) {
+export function renderBriefingBox(ctx, _meta = {}) {
   const latest = ctx.sessions?.[ctx.sessions.length - 1] || {};
   const W = 57;
   const pad = (str, w) => {
@@ -344,7 +346,7 @@ export function renderInfoBlock(ctx) {
 }
 
 /** Render ASCII list table used by /ck:list */
-export function renderListTable(entries, cwd, todayStr) {
+export function renderListTable(entries, cwd, _todayStr) {
   // entries: [{name, contextDir, path, context, lastUpdated}]
   // Sorted alphabetically by contextDir before calling
   const rows = entries.map((e, i) => {

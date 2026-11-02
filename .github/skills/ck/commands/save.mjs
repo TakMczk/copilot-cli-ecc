@@ -18,10 +18,11 @@
 
 import { readFileSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
+import { createHash } from 'crypto';
 import {
   readProjects, writeProjects, loadContext, saveContext,
-  today, shortId, gitSummary, nativeMemoryDir, encodeProjectPath,
-  CONTEXTS_DIR, CURRENT_SESSION,
+  today, shortId, gitSummary, nativeMemoryDir,
+  CURRENT_SESSION,
 } from './shared.mjs';
 
 const isInit = process.argv.includes('--init');
@@ -53,8 +54,11 @@ if (isInit) {
 
   const projects = readProjects();
 
-  // Derive contextDir (lowercase, spaces→dashes, deduplicate)
-  let contextDir = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  // Derive contextDir (lowercase, spaces→dashes, deduplicate). Names with no
+  // ASCII letters/digits (e.g. "Проект") fall back to a stable path hash, so
+  // contextDir is never "" (which would resolve to CONTEXTS_DIR itself).
+  let contextDir = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+    || `project-${createHash('sha256').update(projectPath).digest('hex').slice(0, 8)}`;
   let suffix = 2;
   const existingDirs = Object.values(projects).map(p => p.contextDir);
   while (existingDirs.includes(contextDir) && projects[projectPath]?.contextDir !== contextDir) {

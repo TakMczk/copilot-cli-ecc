@@ -1,7 +1,8 @@
 ---
 name: perl-security
-description: Comprehensive Perl security covering taint mode, input validation, safe process execution, DBI parameterized queries, web security (XSS/SQLi/CSRF), and perlcritic security policies.
-origin: ECC
+description: Comprehensive Perl security covering taint mode, input validation, safe process execution, DBI parameterized queries, web security (XSS/SQLi/CSRF), and perlcritic security policies. Use when reviewing Perl input handling, process execution, DBI queries, or web-facing code.
+metadata:
+  origin: ECC
 ---
 
 # Perl Security Patterns
@@ -411,10 +412,6 @@ Always encode output for its context: `HTML::Entities::encode_entities()` for HT
 severity = 3
 theme = security + core
 
-# Require three-arg open
-[InputOutput::RequireThreeArgOpen]
-severity = 5
-
 # Require checked system calls
 [InputOutput::RequireCheckedSyscalls]
 functions = :builtins
@@ -427,10 +424,6 @@ severity = 5
 # Prohibit backtick operators
 [InputOutput::ProhibitBacktickOperators]
 severity = 4
-
-# Require taint checking in CGI
-[Modules::RequireTaintChecking]
-severity = 5
 
 # Prohibit two-arg open
 [InputOutput::ProhibitTwoArgOpen]
