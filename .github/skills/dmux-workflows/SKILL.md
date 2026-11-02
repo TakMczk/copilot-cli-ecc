@@ -1,7 +1,8 @@
 ---
 name: dmux-workflows
 description: Multi-agent orchestration using dmux (tmux pane manager for AI agents). Patterns for parallel agent workflows across Claude Code, Codex, OpenCode, and other harnesses. Use when running multiple agent sessions in parallel or coordinating multi-agent development workflows.
-origin: ECC
+metadata:
+  origin: ECC
 ---
 
 # dmux Workflows
@@ -141,7 +142,12 @@ git merge feat/billing
 ECC now includes a helper for external tmux-pane orchestration with separate git worktrees:
 
 ```bash
-node scripts/orchestrate-worktrees.js plan.json --execute
+# Use the configured plugin root or standalone install (~/.claude or
+# $CLAUDE_CONFIG_DIR). For a reviewed and explicitly authorized ECC checkout:
+# export CLAUDE_PLUGIN_ROOT="/absolute/path/to/reviewed/ECC"
+ECC_ROOT="${CLAUDE_PLUGIN_ROOT:-${CLAUDE_CONFIG_DIR:-$HOME/.claude}}"
+[ -f "$ECC_ROOT/scripts/orchestrate-worktrees.js" ] || { echo "ECC scripts not found in the selected root (set CLAUDE_PLUGIN_ROOT to an authorized ECC checkout)" >&2; exit 1; }
+node "$ECC_ROOT/scripts/orchestrate-worktrees.js" plan.json --execute
 ```
 
 Example `plan.json`:

@@ -257,6 +257,7 @@ public record ApiResponse<T>(boolean success, T data, String error) {
 ## References
 
 See skill: `springboot-patterns` for Spring Boot architecture patterns.
+See skill: `quarkus-patterns` for Quarkus architecture patterns with REST, Panache, and messaging.
 See skill: `jpa-patterns` for entity design and query optimization.
 
 
@@ -356,6 +357,7 @@ try {
 ## References
 
 See skill: `springboot-security` for Spring Security authentication and authorization patterns.
+See skill: `quarkus-security` for Quarkus security with JWT/OIDC, RBAC, and CDI.
 See skill: `security-review` for general security checklists.
 
 
@@ -470,6 +472,7 @@ class OrderRepositoryIT {
 ```
 
 For Spring Boot integration tests, see skill: `springboot-tdd`.
+For Quarkus integration tests, see skill: `quarkus-tdd`.
 
 ## Test Naming
 
@@ -486,6 +489,7 @@ Use descriptive names with `@DisplayName`:
 ## References
 
 See skill: `springboot-tdd` for Spring Boot TDD patterns with MockMvc and Testcontainers.
+See skill: `quarkus-tdd` for Quarkus TDD patterns with REST Assured and Dev Services.
 See skill: `java-coding-standards` for testing expectations.
 
 
